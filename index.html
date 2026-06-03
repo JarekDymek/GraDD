@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jeopardy Game Master</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="setupView" class="setup-view" aria-labelledby="setupTitle">
+        <div class="brand-row">
+          <div class="mark" aria-hidden="true">J</div>
+          <div>
+            <p class="eyebrow">Game board</p>
+            <h1 id="setupTitle">Jeopardy Game Master</h1>
+          </div>
+        </div>
+
+        <form id="setupForm" class="setup-panel">
+          <label class="file-drop" for="csvFile">
+            <input id="csvFile" name="csvFile" type="file" accept=".csv,text/csv" />
+            <span class="file-title">CSV file</span>
+            <span id="fileName" class="file-name">Choose file</span>
+          </label>
+
+          <div id="csvSummary" class="csv-summary is-hidden" aria-live="polite"></div>
+
+          <div class="team-name-grid">
+            <label>
+              <span>Team A name</span>
+              <input id="teamAName" name="teamAName" type="text" value="Team A" />
+            </label>
+            <label>
+              <span>Team B name</span>
+              <input id="teamBName" name="teamBName" type="text" value="Team B" />
+            </label>
+          </div>
+
+          <div class="control-grid">
+            <label>
+              <span>Categories</span>
+              <input id="categoryCount" name="categoryCount" type="number" min="1" value="5" />
+            </label>
+            <label>
+              <span>Questions per category</span>
+              <input id="questionCount" name="questionCount" type="number" min="1" value="5" />
+            </label>
+            <label>
+              <span>First value</span>
+              <input id="baseValue" name="baseValue" type="number" min="1" step="1" value="100" />
+            </label>
+            <label>
+              <span>Step</span>
+              <input id="valueStep" name="valueStep" type="number" min="1" step="1" value="100" />
+            </label>
+          </div>
+
+          <div class="setup-actions">
+            <button id="startButton" class="primary-button" type="submit" disabled>Start game</button>
+            <button id="clearButton" class="ghost-button" type="button">Clear</button>
+          </div>
+
+          <p id="setupError" class="form-error" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="gameView" class="game-view is-hidden" aria-labelledby="gameTitle">
+        <header class="game-header">
+          <div>
+            <p class="eyebrow">Current game</p>
+            <h2 id="gameTitle">Jeopardy Board</h2>
+          </div>
+          <div class="header-actions">
+            <button id="newGameButton" class="ghost-button" type="button">New CSV</button>
+            <button id="resetBoardButton" class="ghost-button" type="button">Reset board</button>
+          </div>
+        </header>
+
+        <section class="scoreboard" aria-label="Scores">
+          <article class="score-card team-a">
+            <span id="teamANameLabel">Team A</span>
+            <strong id="teamAScore">0</strong>
+          </article>
+          <article class="score-card team-b">
+            <span id="teamBNameLabel">Team B</span>
+            <strong id="teamBScore">0</strong>
+          </article>
+          <article class="turn-card">
+            <span>Current turn</span>
+            <strong id="currentTurnLabel">Team A</strong>
+            <p>Chooses the next question</p>
+          </article>
+          <form id="manualScoreForm" class="manual-score">
+            <label>
+              <span>Team</span>
+              <select id="manualTeam" name="manualTeam">
+                <option id="manualTeamAOption" value="A">Team A</option>
+                <option id="manualTeamBOption" value="B">Team B</option>
+              </select>
+            </label>
+            <label>
+              <span>Points</span>
+              <input id="manualPoints" name="manualPoints" type="number" step="1" value="100" />
+            </label>
+            <button class="primary-button compact" type="submit">Add</button>
+            <button id="manualSubtractButton" class="ghost-button compact" type="button">Subtract</button>
+          </form>
+        </section>
+
+        <section id="board" class="board" aria-label="Question board"></section>
+      </section>
+    </main>
+
+    <div id="questionModal" class="modal-shell is-hidden" role="dialog" aria-modal="true" aria-labelledby="modalCategory">
+      <section class="question-card">
+        <header class="question-header">
+          <div>
+            <p id="modalValue" class="question-value"></p>
+            <h3 id="modalCategory"></h3>
+          </div>
+          <button id="closeModalButton" class="icon-button" type="button" aria-label="Close question">x</button>
+        </header>
+
+        <div class="question-body">
+          <p id="questionText" class="question-text"></p>
+          <div id="dailyDoubleBadge" class="daily-double is-hidden">Daily Double</div>
+        </div>
+
+        <section id="answerPanel" class="answer-panel is-hidden">
+          <span>Answer</span>
+          <p id="answerText"></p>
+        </section>
+
+        <footer class="judge-panel">
+          <div class="turn-status" aria-live="polite">
+            <span id="modalTurnLabel">Team A question</span>
+            <p id="modalTurnHelp">Judge the team that chose this question.</p>
+          </div>
+          <div class="judge-actions">
+            <button id="showAnswerButton" class="primary-button" type="button">Show answer</button>
+            <button id="fullCorrectButton" class="success-button" type="button">Correct full</button>
+            <button id="teamCorrectButton" class="success-button" type="button">Team correct half</button>
+            <button id="teamMissButton" class="danger-button" type="button">Team missed</button>
+            <button id="stealCorrectButton" class="success-button is-hidden" type="button">Steal correct half</button>
+            <button id="stealMissButton" class="danger-button is-hidden" type="button">Steal missed</button>
+          </div>
+        </footer>
+      </section>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
